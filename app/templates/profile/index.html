@@ -1,0 +1,297 @@
+{% extends "profile/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Track Records {%if not data_stat %} (Record tersedia jika sudah menyelesaikan kuis) {% endif %}</h1>
+    </div>
+    <!-- Content Row Highlight-->
+    <div class="row">
+
+        <!-- Highest Score -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Highest Score</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ hiscore }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Lowest Score -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Lowest Score</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{loscore}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Average Score -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Average Score</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{avgscore}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content Records and Statistics -->
+    <div class="row">
+        {% if data_stat %}
+        <!-- Line Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Records</h6>
+                    <div class="dropdown ml-auto mr-3">
+                      <select id="month" name="month" class="form-control ">
+                        {% for month in months %}
+                        <option value="{{ forloop.counter }}" {% if forloop.counter == c_month %} selected {% endif %}>{{month}}</option>
+                        {% endfor %}
+
+                      </select>
+                    </div>
+                    <div class="dropdown">
+                      <select id="year" name="year" class="form-control ">
+                        {% for year in years %}
+                        <option value="{{year}}" {% if year == c_year %} selected {% endif %}>{{year}}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--- Pie Chart -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div
+                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Statistik</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> Addition
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-success"></i> Substraction
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-info"></i> Multiplication
+                        </span>
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-secondary"></i> Division
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <!-- Content Quest -->
+    <div class="row" id="questsrow">
+      <div class="col-lg-8 mb-4">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Accordion -->
+            <a href="#historyCard" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="historyCard">
+                <h6 class="m-0 font-weight-bold text-primary">History</h6>
+            </a>
+            <!-- Card Content - Collapse -->
+            <div class="collapse show" id="historyCard" style="">
+                <div class="card-body">
+                    {% for record in records %}
+                    <div class="row">
+                        <!-- Total Score -->
+                        <div class="col-md-12 mb-4">
+                            <div class="card border-bottom-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Score</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ record.score }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                                Tanggal</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{record.date}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 mb-4">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Accordion -->
+            <a href="#questCard" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="questCard">
+                <h6 class="m-0 font-weight-bold text-primary">Quests</h6>
+            </a>
+            <!-- Card Content - Collapse -->
+            <div class="collapse show" id="questCard" style="">
+                <div class="card-body">
+                    {% for quest in quests %}
+                    <form id="quest{{ quest.id }}" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="quest_id" value="{{ quest.id }}"/>
+                      <h4 class="small font-weight-bold">{{ quest.quest_name}}
+                        <button type="submit" class="btn btn-success btn-circle ml-3 float-right" {% if quest.get_current_percentage != '100%' %}disabled{% endif %}>
+                          <i class="fas fa-check"></i></button>
+                        <span class="float-right">{{ quest.get_current_percentage }}</span>
+                      </h4>
+                      <div class="progress mb-4">
+                          <div class="progress-bar bg-danger" role="progressbar" style="width: {{ quest.get_current_percentage }}" aria-valuenow="{{ quest.get_current_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </form>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+<div id="notifModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Quest selesai</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="modalMessage">Anda mendapat </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block pagelevel %}
+<!-- Page level plugins -->
+<script src="{% static 'app/vendor/chart.js/Chart.min.js' %}"></script>
+
+<!-- Page level custom scripts -->
+{% if data_stat %}
+<script type="text/javascript">
+  var data_stat = {{ data_stat }};
+  var data_record = {{ data_records_data }};
+  var label_record = {{ data_records_label }};
+  var cMonth = {{ c_month }};
+  var cYear = {{ c_year }};
+</script>
+<script>
+  function updateData(chart, labels, data){
+    chart.data.labels = labels;
+    chart.data.datasets.forEach((dataset) => {
+      dataset.data = data;
+    });
+    chart.update();
+  }
+
+  function getData() {
+    $.ajax({
+      data: {
+        'year': cYear,
+        'month': cMonth
+      },
+      url: "{% url 'get_data' %}",
+      success: function(response){
+        data_record = response.data;
+        label_record = response.label;
+        updateData(myLineChart, label_record, data_record);
+      },
+      error:function(response) {
+        console.log(response.responseJSON.errors)
+      }
+    });
+    return false;
+  };
+
+  function viewStatistic(){
+
+  }
+
+  $(document).ready(function(){
+    $("#staticView > a").click(function(){
+
+    });
+    $("#month").change(async function(){
+      cMonth = Number($(this).children("option:selected").val());
+      await getData();
+    });
+
+    $("#year").change(async function(){
+      cYear = $(this).children("option:selected").val();
+      await getData();
+    });
+  });
+
+</script>
+<script src="{% static 'app/js/demo/chart-area-demo.js' %}"></script>
+<script src="{% static 'app/js/demo/chart-pie-demo.js' %}"></script>
+
+{% endif %}
+<script>
+  $(document).ready(function(){
+    $("[id^='quest']").submit(function(){
+      $.ajax({
+        data: $(this).serialize(),
+        type: $(this).attr('method'),
+        url: "{% url 'profile' %}",
+        success: function(response){
+          const msg = $('#modalMessage').text();
+          $('#profilelvl').text(response.level);
+          $('#expNeeded').text(response.exp_needed + " XP to reach level " + (response.level+1));
+          $('#expProgress').css('width', response.exp_progress);
+          $('#modalMessage').text(msg + response.exp + " XP");
+          $('#notifModal').modal('show');
+        }
+      });
+      $(this).remove();
+      return false;
+    });
+  });
+</script>
+
+{% endblock %}

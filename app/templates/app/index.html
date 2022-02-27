@@ -1,0 +1,53 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+
+<!-- Content 1 -->
+  <section class="pt-80 pb-80 bg-light content_1">
+    <div class="container px-xl-0">
+      <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-10 text-center">
+          <div class="f-14 color-heading semibold text-uppercase sp-20" data-aos="fade-down" data-aos-delay="0">
+            Don't get mad, learn to add
+          </div>
+          <h2 class="mt-25" data-aos="fade-down" data-aos-delay="250">
+            Latih otakmu dengan berhitung
+          </h2>
+          <a href="{% url 'kuis' %}" class="btn mt-15 color-main f-16 sm action-main">
+              Mulai Main
+            </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Feature 1 -->
+    <section class="pt-105 pb-45 bg-light text-center feature_1">
+      <div class="container px-xl-0">
+        <div class="row justify-content-center">
+          <div class="col-xl-10">
+            <h2 class="mb-45 small" data-aos="fade-down" data-aos-delay="0">
+              My App
+            </h2>
+            <div class="row justify-content-center">
+              <div class="col-md-4" data-aos="fade-down" data-aos-delay="250">
+              </div>
+              <div class="col-md-4 mb-50" data-aos="fade-down" data-aos-delay="500">
+                <i class="fas fa-calculator f-60 action-1">
+                </i>
+                <div class="mt-20 mb-25 f-22 title">
+                  Kuis Pintar
+                </div>
+                <div class="color-heading text-adaptive">
+                  Kuis Pintar adalah aplikasi yang dapat melatih ketepatan dan kecepatan
+                  <br>dalam menghitung.
+                </div>
+              </div>
+              <div class="col-md-4" data-aos="fade-down" data-aos-delay="750">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}

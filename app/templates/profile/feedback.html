@@ -1,0 +1,147 @@
+{% extends "profile/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid">
+
+  <div class="row justify-content-md-center">
+    <div class="col-xl-6 col-lg-7">
+      <form id="questioner" class="needs-validation" action="." method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="card shadow mb-3">
+            <div class="card-header py-3">
+                <h1 class="h3 mb-0 text-primary">Feedback Uji Aplikasi</h1>
+            </div>
+            <div id="userBody" class="card-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="inputName">Nama</label>
+                    <input type="text" class="form-control" id="inputName" name="name" aria-describedby="namaHelp" placeholder="Your name" required>
+                    <div class="invalid-feedback">
+                      Please provide a name.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="inputEmail">Email</label>
+                    <input type="email" class="form-control" id="inputEmail" name="email" aria-describedby="emailHelp" placeholder="Your email" required>
+                    <div class="invalid-feedback">
+                      Please provide an email.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div id="questions" style="display:none">
+        {% for q in questions %}
+        <div class="card shadow mb-3">
+          <div class="card-body">
+            <h4 class="h4 mb-3 text-gay-800">{{ q.title }}</h4>
+            <div class="row justify-content-md-center">
+              <div class="col-md-6">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="q{{ forloop.counter }}" id="q{{forloop.counter}}inlineRadio1" value="1">
+                  <label class="form-check-label" for="q{{forloop.counter}}inlineRadio1">Ya</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="q{{ forloop.counter }}" id="q{{forloop.counter}}inlineRadio2" value="2">
+                  <label class="form-check-label" for="q{{forloop.counter}}inlineRadio2">Tidak</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="q{{ forloop.counter }}" id="q{{forloop.counter}}inlineRadio3" value="3" checked>
+                  <label class="form-check-label" for="q{{forloop.counter}}inlineRadio3">Tidak tahu</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+
+
+      <div class="mb-4">
+        <a id="nextButton" class="btn btn-secondary btn-icon-split">
+            <span class="icon text-gray-600">
+                <i class="fas fa-arrow-right"></i>
+            </span>
+            <span class="text">Next</span>
+        </a>
+        <a id="submitButton" class="btn btn-success btn-icon-split" style="display: none">
+            <span class="icon text-white-50">
+                <i class="fas fa-check"></i>
+            </span>
+            <span class="text">Submit</span>
+        </a>
+      </div>
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block pagelevel %}
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script>
+  $(document).ready(function() {
+    let nameError = false;
+    let emailError = false;
+    const email = document.getElementById('inputEmail');
+
+    function validateName(){
+      let nName = $('#inputName').val();
+      if (nName.length == ''){
+        nameError = false;
+        $('#inputName').addClass('is-invalid');
+        return false;
+      } else if (nName.length < 3) {
+        nameError = false;
+        $('#inputName').addClass('is-invalid');
+        return false;
+      } else {
+        $('#inputName').removeClass('is-invalid');
+        nameError = true;
+      }
+    }
+    $('#inputName').blur(function(){
+      validateName();
+    });
+    $('#inputName').keyup(function(){
+      $(this).removeClass('is-invalid');
+    });
+    $('#inputEmail').blur(function(){
+      let regex = /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
+      let s = email.value;
+      if (regex.test(s)){
+        email.classList.remove('is-invalid');
+        emailError = true;
+      } else {
+        email.classList.add('is-invalid');
+        emailError = false;
+      }
+    });
+
+    $('#nextButton').click(function(){
+      validateName();
+
+      if (nameError == true && emailError == true){
+        $('#questions').show();
+        $('#userBody').hide();
+        $(this).hide();
+        $('#submitButton').show();
+      } else {
+        email.classList.add('is-invalid');
+      }
+    });
+    $('#submitButton').click(function(){
+      $('#questioner').submit();
+    });
+  })
+</script>
+{% endblock %}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{{ title }}</title>
+    {% load static %}
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'app/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'app/css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <!-- Topbar -->
+          <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}" style="
+                height: 4.375rem;
+                text-decoration: none;
+                font-size: 1rem;
+                font-weight: 800;
+                padding: 1.5rem 1rem;
+                text-align: center;
+                text-transform: uppercase;
+                letter-spacing: .05rem;
+                z-index: 1;">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">KUISIP</div>
+            </a>
+            <a href="{% url 'kuis' %}" class="btn btn-primary btn-icon-split ml-auto">
+              <span class="icon text-white-50">
+                <i class="fas fa-flag"></i>
+              </span>
+              <span class="text">Play</span>
+            </a>
+            {% if request.user.is_authenticated %}
+              <!-- Topbar Navbar -->
+            <ul class="navbar-nav ml-3">
+              <li class="nav-item dropdown no-arrow mx-1 show">
+                  <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="false">
+                      <i class="fas fa-scroll fa-fw"></i>
+                      <!-- Counter - Messages -->
+                      <span class="badge badge-danger badge-counter">{{ quests.count }}</span>
+                  </a>
+                  <!-- Dropdown - Quests -->
+                  <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                      <h6 class="dropdown-header">
+                          Quests
+                      </h6>
+                      {% if quests|length_is:"0" %}
+                      <a class="dropdown-item text-center small text-gray-500" href="#">Tidak ada quest</a>
+                      {% endif %}
+                      {% for quest in quests %}
+                      <a class="dropdown-item d-flex flex-row align-items-center" href="/profile/#quest{{quest.id}}">
+                          <div class="font-weight-bold" style="width: 100%">
+
+                              <div class="d-flex justify-content-between">
+                                  <div class="mr-3">{{ quest.quest_name}} ({{quest.reward}} XP)</div>
+                                  <div>{{ quest.get_current_percentage }}</div>
+                              </div>
+                              <div class="small text-gray-500">
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ quest.get_current_percentage }}" aria-valuenow="{{ quest.get_current_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                              </div>
+                          </div>
+                      </a>
+                      {% endfor %}
+                  </div>
+              </li>
+                <div class="topbar-divider d-none d-sm-block"></div>
+                <!-- Nav Item - User Information -->
+
+                <li class="nav-item dropdown no-arrow">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ request.user.username }}</span>
+                        <img class="img-profile rounded-circle"src="{% static 'app/img/undraw_profile.svg' %}">
+                        <span id="profileLvl" class="badge badge-pill badge-danger badge-counter">{{request.user.profile.level}}</span>
+                    </a>
+                    <!-- Dropdown - User Information -->
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                        aria-labelledby="userDropdown">
+                        <a class="dropdown-item d-flex flex-row align-items-center">
+                            <div class="font-weight-bold" style="width: 100%">
+                                <div class="d-flex justify-content-between">
+                                    <div id="expNeeded">{{request.user.profile.exp_to_next_level}} XP to reach level {{request.user.profile.level|add:"1"}}</div>
+
+                                </div>
+                                <div class="small text-gray-500">
+                                  <div id="expProgress" class="progress mb-2">
+                                      <div class="progress-bar bg-danger" role="progressbar" style="width: {{request.user.profile.get_exp_percentage}}" aria-valuenow="{{request.user.profile.get_exp_percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
+                                  </div>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'profile' %}">
+                          <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                          Profile
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                            Logout
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+            {% else %}
+
+            <a href="{% url 'login' %}" class="btn btn-primary btn-user ml-3">Login
+            </a>
+            {% endif %}
+          </nav>
+          <!-- End of Topbar -->
+
+          <!-- Begin Page Content -->
+          {% block content %}{% endblock %}
+        </div>
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Bimo Kusuma 2021</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'app/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'app/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'app/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'app/js/sb-admin-2.min.js' %}"></script>
+    {% block pagelevel %}{% endblock %}
+</body>
+
+</html>
